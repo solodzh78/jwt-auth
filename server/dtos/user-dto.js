@@ -7,7 +7,6 @@ class UserDTO {
         this.id = model._id
         this.isActivated = model.isActivated
     }
-
 }
 
 export default UserDTO;
