@@ -5,7 +5,7 @@ const UserSchema = new Schema({
     email: { type: String, unique: true, requared: true },
     password: { type: String, requared: true },
     isActivated: { type: Boolean, default: false },
-    activationLink: { type: String },
+    activationUid: { type: String },
 });
 
 export default model('User', UserSchema);
