@@ -9,7 +9,7 @@ import ApiError from '../exeptions/api-error.js';
 
 
 class UserService {
-    async registration (email, password) {
+    async registration(email, password) {
         const candidate = await UserModel.findOne({ email });
         if (candidate) {
             throw ApiError.BadRequest(`Пользователь с адрессом ${email} уже существует`);
@@ -26,18 +26,24 @@ class UserService {
 
         const userDTO = new UserDTO(user); // email, id, isActivated
         const tokens = tokenService.generateTokens({ ...userDTO });
-        
+
         await tokenService.saveRefreshToken(userDTO.id, tokens.refreshToken);
 
-        return { ...tokens, user: userDTO}
+        return { ...tokens, user: userDTO };
     }
-    async activation (activationUid) {
-        const user = await UserModel.findOne({activationUid});
+    async activation(activationUid) {
+        const user = await UserModel.findOne({ activationUid });
         if (!user) {
             throw ApiError.BadRequest('Некорректная ссылка активации');
         }
         user.isActivated = true;
         await user.save();
+    }
+    async login(email, password) {
+        const user = await UserModel.findOne({email});
+        if (!user) {
+            throw new ApiError.BadRequest('Пользователь с таким email не найден')
+        }
     }
 }
 
