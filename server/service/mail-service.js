@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 
 class MailService {
-    async sendActivationMail (to, link) {
+    async sendActivationMail(to, link) {
         try {
             console.log(`Отправка сообщения с почты ${process.env.SMTP_USER} на почту ${to}`);
             const transporter = nodemailer.createTransport({

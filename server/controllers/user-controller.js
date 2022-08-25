@@ -4,7 +4,7 @@ import userService from '../service/user-service.js';
 import ApiError from '../exeptions/api-error.js';
 
 class UserController {
-    async registration (req, res, next) {
+    async registration(req, res, next) {
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
@@ -21,7 +21,7 @@ class UserController {
             next(e);
         }
     }
-    async login (req, res, next) {
+    async login(req, res, next) {
         try {
             const { email, password } = req.body;
             const userData = await userService.login(email, password);
@@ -34,9 +34,9 @@ class UserController {
             next(e);
         }
     }
-    async logout (req, res, next) {
+    async logout(req, res, next) {
         try {
-            const { refreshToken } = req.cookie;
+            const { refreshToken } = req.cookies;
             const token = await userService.logout(refreshToken);
             res.clearCookie('refreshToken');
             return res.json(token);
@@ -44,7 +44,7 @@ class UserController {
             next(e);
         }
     }
-    async activation (req, res, next) {
+    async activation(req, res, next) {
         try {
             const activationUid = req.params.link;
             await userService.activation(activationUid);
@@ -53,7 +53,7 @@ class UserController {
             next(e);
         }
     }
-    async refresh (req, res, next) {
+    async refresh(req, res, next) {
         try {
             const { refreshToken } = req.cookie;
             const userData = await userService.refresh(refreshToken);
@@ -67,9 +67,10 @@ class UserController {
             next(e);
         }
     }
-    async getUsers (req, res, next) {
+    async getUsers(req, res, next) {
         try {
-            res.json(['123', '456'])
+            const users = await userService.getAllUsers();
+            return res.json(users);
         } catch (e) {
             next(e);
         }

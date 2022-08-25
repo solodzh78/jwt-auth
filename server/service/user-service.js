@@ -7,14 +7,14 @@ import tokenService from './token-service.js';
 import UserDTO from '../dtos/user-dto.js';
 import ApiError from '../exeptions/api-error.js';
 
-const makeAuthSuccessResponce = async (user) => {
-    const userDTO = new UserDTO(user); // email, id, isActivated
-    const tokens = tokenService.generateTokens({ ...userDTO });
-    await tokenService.saveRefreshToken(userDTO.id, tokens.refreshToken);
-    return { ...tokens, user: userDTO };
-}
 
 class UserService {
+    async makeAuthSuccessResponce(user) {
+        const userDTO = new UserDTO(user); // email, id, isActivated
+        const tokens = tokenService.generateTokens({ ...userDTO });
+        await tokenService.saveRefreshToken(userDTO.id, tokens.refreshToken);
+        return { ...tokens, user: userDTO };
+    }    
     async registration(email, password) {
         const candidate = await UserModel.findOne({ email });
         if (candidate) {
@@ -30,7 +30,7 @@ class UserService {
         const user = await UserModel.create({ email, activationUid, password: hashPassword });
         await mailService.sendActivationMail(email, activationLink);
 
-        const res = await makeAuthSuccessResponce(user);
+        const res = await this.makeAuthSuccessResponce(user);
         return res;
     }
     async activation(activationUid) {
@@ -50,7 +50,7 @@ class UserService {
         if (!isPassEquals) {
             throw ApiError.BadRequest('Неверный пароль');
         }
-        const res = await makeAuthSuccessResponce(user);
+        const res = await this.makeAuthSuccessResponce(user);
         return res;
     }
     async logout(refreshToken) {
@@ -69,8 +69,12 @@ class UserService {
         }
         const user = await UserModel.findById(userData.id);
 
-        const res = await makeAuthSuccessResponce(user);
+        const res = await this.makeAuthSuccessResponce(user);
         return res;
+    }
+    async getAllUsers() {
+        const users = await UserModel.find();
+        return users;
     }
 }
 
