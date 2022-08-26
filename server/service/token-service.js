@@ -3,10 +3,14 @@ import jwt from 'jsonwebtoken';
 import TokenModel from '../models/token-model.js';
 
 class TokenService {
-    generateTokens (payload) {
-        const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_TOKEN_SECRET, {expiresIn: '30m'});
-        const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_TOKEN_SECRET, {expiresIn: '30d'});
-        return {accessToken, refreshToken};
+    generateTokens(payload) {
+        const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_TOKEN_SECRET, {
+            expiresIn: '30s',
+        });
+        const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_TOKEN_SECRET, {
+            expiresIn: '30d',
+        });
+        return { accessToken, refreshToken };
     }
     validateAccessToken(token) {
         try {
@@ -24,22 +28,22 @@ class TokenService {
             return null;
         }
     }
-    async findToken(token) {
-        const tokenData = await TokenModel.findOne({refreshToken});
+    async findToken(refreshToken) {
+        const tokenData = await TokenModel.findOne({ refreshToken });
         return tokenData;
     }
-    async saveRefreshToken (userId, refreshToken) {
-        const tokenData = await TokenModel.findOne({user: userId});
+    async saveRefreshToken(userId, refreshToken) {
+        const tokenData = await TokenModel.findOne({ user: userId });
         if (tokenData) {
             tokenData.refreshToken = refreshToken;
-            const res = await tokenData.save()
+            const res = await tokenData.save();
             return res;
         }
-        const token = await TokenModel.create({user: userId, refreshToken});
+        const token = await TokenModel.create({ user: userId, refreshToken });
         return token;
     }
     async removeToken(refreshToken) {
-        const tokenData = await TokenModel.deleteOne({refreshToken});
+        const tokenData = await TokenModel.deleteOne({ refreshToken });
         return tokenData;
     }
 }
