@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import { FC, useState } from 'react';
 import { useAppDispatch } from '../redux/hooks';
 import { login, registration } from '../redux/slice';
 
