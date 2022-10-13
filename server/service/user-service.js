@@ -13,7 +13,7 @@ class UserService {
         const userDTO = new UserDTO(user); // email, id, isActivated
         const tokens = tokenService.generateTokens({ ...userDTO });
         await tokenService.saveRefreshToken(userDTO.id, tokens.refreshToken);
-        return { ...tokens, user: userDTO };
+        return { accessToken: tokens.accessToken, refreshToken: tokens.refreshToken, user: userDTO };
     }    
     async registration(email, password) {
         const candidate = await UserModel.findOne({ email });
@@ -21,7 +21,7 @@ class UserService {
             throw ApiError.BadRequest(`Пользователь с адрессом ${email} уже существует`);
         }
 
-        const activationUid = uuidv4();
+        const activationUid = uuidv4(); 
         const activationLink = `${process.env.API_URL}${process.env.API_LINK}/activate/${activationUid}`;
 
         const salt = await bcrypt.genSalt(10);
@@ -74,7 +74,7 @@ class UserService {
     }
     async getAllUsers() {
         const users = await UserModel.find();
-        return users;
+        return users.map(user => new UserDTO(user));
     }
 }
 

@@ -4,7 +4,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
 import router from './router/index.js';
-import errorMiddleware from './middleware/error-middleware.js'
+import errorMiddleware from './middleware/error-middleware.js';
 
 env.config();
 const PORT = process.env.PORT || 5000;

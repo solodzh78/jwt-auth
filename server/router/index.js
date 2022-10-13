@@ -3,8 +3,7 @@ import { validator } from '../validations/index.js';
 import userController from '../controllers/user-controller.js';
 import authMiddleware from '../middleware/auth-middleware.js';
 
-const router = new Router();
-
+const router = Router();
 
 router.post('/registration', validator.registration, userController.registration);
 router.post('/login', userController.login);

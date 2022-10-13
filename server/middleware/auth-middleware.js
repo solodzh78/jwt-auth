@@ -10,6 +10,7 @@ export default function(req, res, next) {
 
         const accessToken = authHeader.split(' ')[1];
         if (!accessToken) {
+            
             return next(ApiError.UnauthorizedError());
         }
 
